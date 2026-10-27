@@ -1,0 +1,21 @@
+ai-assurance-copilot/
+├── app.py
+├── requirements.txt
+├── README.md
+├── data/
+│   ├── sample_assessments.json
+│   └── framework_controls.json
+├── modules/
+│   ├── intake.py
+│   ├── mapping.py
+│   ├── risk_engine.py
+│   ├── ai_copilot.py
+│   └── report_generator.py
+├── tests/
+│   ├── test_intake.py
+│   ├── test_mapping.py
+│   └── test_risk_engine.py
+└── docs/
+    ├── requirements.md
+    ├── architecture.md
+    └── test_plan.md
