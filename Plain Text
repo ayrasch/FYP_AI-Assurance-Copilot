@@ -19,3 +19,21 @@ ai-assurance-copilot/
     ├── requirements.md
     ├── architecture.md
     └── test_plan.md
+
+Current Infra
+Z:/FYP/
+│
+├── PDF/
+│   ├── cybersecurity_guide.pdf
+│   ├── network_security.pdf
+│   └── other_documents.pdf
+│
+├── Chroma/
+│
+├── ingest.py
+├── test_database.py
+├── rag.py
+├── app.py
+├── .env
+├── .env.example
+└── .gitignore
