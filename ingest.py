@@ -1,10 +1,15 @@
+from pathlib import Path
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
  
-PDF_PATH = r"Z:\FYP\PDF"
-CHROMA_PATH = r"Z:\FYP\Chroma"
+BASE_PATH = Path(__file__).resolve().parent
+PDF_PATH = BASE_PATH / "PDF"
+CHROMA_PATH = BASE_PATH / "Chroma"
+
+print("PDF folder:", PDF_PATH)
+print("Chroma folder:", CHROMA_PATH)
  
 # Step 1: Load all PDF files
 loader = PyPDFDirectoryLoader(PDF_PATH)
