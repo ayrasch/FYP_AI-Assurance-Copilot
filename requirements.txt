@@ -1,13 +1,3 @@
-langchain
-langchain-community
-langchain-chroma
-langchain-huggingface
-langchain-text-splitters
-langchain-openai
-sentence-transformers
-pypdf
-python-dotenv
-streamlit
-
-# pip install -r requirements.txt
-# Python will install all the packages listed in the file.
+streamlit>=1.38,<2
+pandas>=2.0,<3
+plotly>=5.18,<7
