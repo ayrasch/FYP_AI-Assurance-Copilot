@@ -368,6 +368,13 @@ elif page == "Guided Intake":
             name = st.text_input("AI system name *", value=draft.get("system_name", ""), placeholder="Customer Support Chatbot")
             owner = st.text_input("Owner / department *", value=draft.get("owner", ""), placeholder="Customer Service")
             purpose = st.text_area("What does this system do? *", value=draft.get("purpose", ""), placeholder="It answers customer questions using an LLM...")
+            
+            # Allows to paste any scenario, rather than sticking to a particular example 
+            scenario_description = st.text_area(
+            "Scenario Description",
+            value=draft.get("scenario_description", ""),
+            placeholder="Paste your AI system scenario here...")
+            
             c1, c2 = st.columns(2)
             with c1:
                 industries = ["Retail", "Finance", "Healthcare", "Education", "Government", "Other"]
@@ -380,7 +387,7 @@ elif page == "Guided Intake":
                 if not all(x.strip() for x in [name, owner, purpose]):
                     st.error("Complete all mandatory fields marked with *.")
                 else:
-                    draft.update(system_name=name.strip(), owner=owner.strip(), purpose=purpose.strip(),
+                    draft.update(system_name=name.strip(), owner=owner.strip(), purpose=purpose.strip(), scenario_description=scenario_description.strip(),
                                  industry=industry, model_type=model_type)
                     st.session_state.step2_cache = {}
                     st.session_state.current_step = 2
