@@ -1,39 +1,17 @@
-ai-assurance-copilot/
+AI-Assurance-Copilot/
+│
 ├── app.py
-├── requirements.txt
-├── README.md
-├── data/
-│   ├── sample_assessments.json
-│   └── framework_controls.json
-├── modules/
-│   ├── intake.py
-│   ├── mapping.py
-│   ├── risk_engine.py
-│   ├── ai_copilot.py
-│   └── report_generator.py
-├── tests/
-│   ├── test_intake.py
-│   ├── test_mapping.py
-│   └── test_risk_engine.py
-└── docs/
-    ├── requirements.md
-    ├── architecture.md
-    └── test_plan.md
-
-Current Infra
-Z:/FYP/
-│
-├── PDF/
-│   ├── cybersecurity_guide.pdf
-│   ├── network_security.pdf
-│   └── other_documents.pdf
-│
-├── Chroma/
-│
 ├── ingest.py
 ├── test_database.py
-├── rag.py
-├── app.py
-├── .env
-├── .env.example
-└── .gitignore
+├── requirements.txt
+│
+└── services/
+    ├── __init__.py
+    ├── assessment.py
+    │
+    └── agents/
+        ├── __init__.py
+        ├── intake_agent.py
+        ├── mapping_agent.py
+        ├── risk_agent.py
+        └── documentation_agent.py
