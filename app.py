@@ -1,6 +1,6 @@
 """AI Assurance Copilot — FYP UI Prototype.
 
-Run: streamlit run app.py
+Run: python -m streamlit run app.py
 The bundled services/assessment.py is a transparent DEMO adapter.
 Replace it with your team's backend and verified RAG outputs when ready.
 """
