@@ -52,6 +52,26 @@ div.stButton > button[kind="primary"],div.stFormSubmitButton > button[kind="prim
 .small-label {color:#84baca;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;}
 
 
+/* Guided Intake input visibility and usability */
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea {
+    background-color: #102d49 !important;
+    color: #ffffff !important;
+    caret-color: #67e8e0 !important;
+    -webkit-text-fill-color: #ffffff !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+[data-testid="stTextInput"] input::placeholder,
+[data-testid="stTextArea"] textarea::placeholder {
+    color: #aac3d9 !important;
+    -webkit-text-fill-color: #aac3d9 !important;
+}
+[data-testid="stTextArea"] textarea:focus,
+[data-testid="stTextInput"] input:focus {
+    outline: 2px solid #54c9d3 !important;
+}
+
 /* 1. Sidebar Navigation 文字颜色 */
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] p,
@@ -77,7 +97,40 @@ div.stButton > button[kind="secondary"]:hover {
     color: #FFFFFF !important;
     border-color: #54C9D3 !important;
 }
+/* 5. Main form labels */
+div[data-testid="stWidgetLabel"] p,
+div[data-testid="stWidgetLabel"] span,
+div[data-testid="stTextInput"] label p,
+div[data-testid="stTextArea"] label p,
+div[data-testid="stSelectbox"] label p,
+div[data-testid="stMultiSelect"] label p,
+div[data-testid="stNumberInput"] label p {
+    color: #DCEBFA !important;
+    opacity: 1 !important;
+    font-weight: 600 !important;
+}
 
+/* 6. Text input / text area readability */
+div[data-testid="stTextInput"] input,
+div[data-testid="stTextArea"] textarea {
+    background-color: #102D49 !important;
+    color: #EAF4FF !important;
+    border: 1px solid #9FC3DF !important;
+}
+
+/* 7. Placeholder color */
+div[data-testid="stTextInput"] input::placeholder,
+div[data-testid="stTextArea"] textarea::placeholder {
+    color: #9FC3DF !important;
+    opacity: 1 !important;
+}
+
+/* 8. Selectbox text */
+div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+    background-color: #102D49 !important;
+    color: #EAF4FF !important;
+    border-color: #9FC3DF !important;
+}
 </style>
 
 
@@ -367,7 +420,13 @@ elif page == "Guided Intake":
         with st.form("system_details"):
             name = st.text_input("AI system name *", value=draft.get("system_name", ""), placeholder="Customer Support Chatbot")
             owner = st.text_input("Owner / department *", value=draft.get("owner", ""), placeholder="Customer Service")
-            purpose = st.text_area("What does this system do? *", value=draft.get("purpose", ""), placeholder="It answers customer questions using an LLM...")
+            purpose = st.text_area(
+                "What does this system do? *",
+                value=draft.get("purpose", ""),
+                placeholder="Describe what your AI system does...",
+                height=130,
+                key="intake_system_purpose",
+            )
             
             # Allows to paste any scenario, rather than sticking to a particular example 
             scenario_description = st.text_area(
