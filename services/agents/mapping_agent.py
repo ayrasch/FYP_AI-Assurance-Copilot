@@ -1,4 +1,3 @@
-
 from pathlib import Path
 
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -72,16 +71,24 @@ def mapping_agent(profile):
         metadata = document.metadata
 
         # Display retrieved document information in terminal
+
         print("\nRETRIEVED DOCUMENT:")
+        print("Framework:", metadata.get("framework"))
+        print("Document:", metadata.get("document_name"))
+        print("Reference IDs:", metadata.get("reference_ids"))
+        print("Reference Type:", metadata.get("reference_type"))
         print("Source:", metadata.get("source"))
         print("Page:", metadata.get("page"))
         print("Content:", document.page_content[:300])
         print("-----------------------------")
 
+
         # Store retrieved information
         mapped_controls.append({
-            "control": metadata.get("control_id", "Not identified"),
+            "control": metadata.get("reference_ids", "Not identified"),
             "framework": metadata.get("framework", "Not specified"),
+            "document_name": metadata.get("document_name", "Unknown document"),
+            "reference_type": metadata.get("reference_type", "Not identified"),
             "description": document.page_content,
             "source": metadata.get("source", "Unknown source"),
             "page": (
@@ -104,4 +111,5 @@ def mapping_agent(profile):
             "from ChromaDB. Source details are available for review."
         )
     }
+
 
