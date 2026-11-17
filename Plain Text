@@ -20,3 +20,4 @@ AI-Assurance-Copilot/
 Need to Install:
 python -m pip install langchain-huggingface langchain-chroma sentence-transformers
 python -m pip install -r requirements.txt
+python -m pip install langchain-community pypdf
