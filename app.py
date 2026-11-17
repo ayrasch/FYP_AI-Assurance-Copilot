@@ -17,6 +17,15 @@ import streamlit as st
 
 from services.assessment import assess
 
+# Integration with the team's Mapping Agent. The UI remains runnable while the
+# teammate's services/agents/mapping_agent.py has not yet been added.
+try:
+    from services.agents.mapping_agent import mapping_agent
+except ModuleNotFoundError as exc:
+    if exc.name not in ("services.agents", "services.agents.mapping_agent"):
+        raise  # Do not hide a broken dependency inside the mapping agent.
+    mapping_agent = None
+
 st.set_page_config(page_title="AI Assurance Copilot | V2", page_icon="🛡️", layout="wide")
 
 PAGES = ["Welcome", "Guided Intake", "Dashboard", "Human Review", "Reports"]
@@ -267,10 +276,31 @@ def start_assessment(profile):
             status.update(label="Assessment failed", state="error")
             st.error("System name, owner and purpose are required.")
             return
-        st.write("2 / 4 · Mapping: passing intake data to the assessment adapter")
+        st.write("2 / 4 · Mapping: connecting the submitted profile to the Mapping Agent")
         try:
+            # Mapping returns a dictionary, not a list of controls.
+            mapping_result = mapping_agent(profile.copy()) if mapping_agent else None
             result, mode = assess(profile.copy())
             result = normalized(result, profile.copy())
+            if mapping_result is not None:
+                if not isinstance(mapping_result, dict):
+                    raise ValueError("Mapping Agent must return a dictionary")
+                controls = mapping_result.get("mapped_controls", [])
+                if not isinstance(controls, list):
+                    raise ValueError("Mapping Agent 'mapped_controls' must be a list")
+                result["mapped_controls"] = controls
+                result["mapping_status"] = mapping_result.get("mapping_status", "UNKNOWN")
+                result["mapping_message"] = mapping_result.get("mapping_message", "")
+                result["mapping_source_verified"] = mapping_result.get("source_verified") is True
+                # Keep the original assessment's source_verified separate: retrieved
+                # chunks are not proof that demo risk findings have verified citations.
+                if result["mapping_status"] == "COMPLETED":
+                    st.write(f"Mapping Agent retrieved {len(controls)} document chunks.")
+                else:
+                    st.warning(result["mapping_message"] or "Mapping Agent returned no controls.")
+            else:
+                result["mapping_status"] = "NOT_AVAILABLE"
+                st.warning("Mapping Agent file not found. Using the existing assessment adapter only.")
         except Exception as exc:
             status.update(label="Assessment failed", state="error")
             st.error(f"Assessment backend error: {exc}")
@@ -278,7 +308,7 @@ def start_assessment(profile):
         st.write("3 / 4 · Risk: findings received and normalised")
         st.write("4 / 4 · Documentation: draft report data prepared")
         if "DEMO" in str(mode).upper():
-            st.caption("Demo adapter only: no real agents, RAG retrieval or framework verification ran.")
+            st.caption("Risk assessment remains a DEMO adapter; any Mapping Agent output is separate and does not verify demo findings or citations.")
         status.update(label="Draft assessment ready", state="complete", expanded=False)
     ident = f"ASM-{uuid.uuid4().hex[:10].upper()}"
     result["assessment_id"] = ident
@@ -372,7 +402,7 @@ with st.sidebar:
     st.radio("Navigation", PAGES, index=choose(PAGES, st.session_state.navigation),
              key=f"nav_{st.session_state.nav_version}", on_change=nav_changed)
     st.divider()
-    st.info("Demo adapter included. RAG and AI agents require the team's backend.")
+    st.info("Demo risk adapter included. Mapping Agent is used when its module is installed; verified RAG/risk agents still require the team backend.")
     st.caption(f"Assessments in this session: {len(st.session_state.assessments)}")
     st.caption("Session data is temporary; refresh/restart may clear it.")
 
@@ -531,6 +561,16 @@ elif page == "Dashboard":
         st.caption(f"Mode: {record.get('run_mode', 'Unknown')} · Created: {record.get('created_at', '')}")
         if is_demo(record):
             st.warning("Demo findings and citations are illustrative. No RAG references have been verified.")
+        if "mapping_status" in record:
+            with st.expander("Mapping Agent results", expanded=False):
+                st.write("**Status:**", record.get("mapping_status", "UNKNOWN"))
+                st.write(record.get("mapping_message", ""))
+                controls = record.get("mapped_controls", [])
+                if controls:
+                    st.dataframe(pd.DataFrame(controls), hide_index=True, use_container_width=True)
+                else:
+                    st.info("No mapped controls available.")
+                st.caption("Retrieved document chunks are unverified until reviewed against the source framework.")
         if not findings:
             st.info("The assessment returned no findings. Try another scenario or check your backend.")
         else:
