@@ -23,7 +23,7 @@ def documentation_agent(profile, mapped_controls, risk_result):
         "risk_status",
         "NOT_COMPLETED"
     )
-
+    # Counts the number of risk findings.
     total_risks = len(findings)
 
     # 4. Prepare the assessment summary
