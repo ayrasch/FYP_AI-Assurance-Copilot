@@ -14,6 +14,7 @@ from datetime import datetime
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import streamlit.components.v1 as components
 
 from services.assessment import assess
 
@@ -36,13 +37,12 @@ YES_NO = ["Not sure", "Yes", "No"]
 
 st.markdown("""
 <style>
-.stApp {background: #08192d; color: #e9f2ff;}
-[data-testid="stSidebar"] {background: #0c233b; border-right: 1px solid #24435d;}
-[data-testid="stHeader"] {background: #08192d;}
-[data-testid="stMetric"] {background:#102d49;border:1px solid #274661;border-radius:14px;padding:16px;}
-[data-testid="stMetricLabel"] {color:#aac3d9;}
-[data-testid="stMetricValue"] {color:#fff;}
-h1,h2,h3 {color:#f0f6ff !important;}
+.stApp {background:var(--background-color);color:var(--text-color);}
+[data-testid="stSidebar"] {background:var(--secondary-background-color);border-right:1px solid var(--border-color, #718096);}
+[data-testid="stHeader"] {background:var(--background-color);}
+[data-testid="stMetric"] {background:var(--secondary-background-color);border:1px solid var(--border-color, #718096);border-radius:14px;padding:16px;}
+[data-testid="stMetricLabel"], [data-testid="stMetricValue"] {color:var(--text-color) !important;}
+h1,h2,h3 {color:var(--text-color) !important;}
 div.stButton > button[kind="primary"],div.stFormSubmitButton > button[kind="primary"]
  {background:#078b99;border:0;color:white;}
 .hero {background:linear-gradient(125deg,#123b60 0%,#0d2b4a 60%,#073e4a 100%);
@@ -61,50 +61,56 @@ div.stButton > button[kind="primary"],div.stFormSubmitButton > button[kind="prim
 .small-label {color:#84baca;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;}
 
 
+/* Native Streamlit theme variables adapt immediately to Light / Dark Mode. */
+:root {color-scheme:light dark;}
+
 /* Guided Intake input visibility and usability */
 [data-testid="stTextInput"] input,
 [data-testid="stTextArea"] textarea {
-    background-color: #102d49 !important;
-    color: #ffffff !important;
-    caret-color: #67e8e0 !important;
-    -webkit-text-fill-color: #ffffff !important;
+    background-color: var(--secondary-background-color) !important;
+    color: var(--text-color) !important;
+    caret-color: var(--text-color) !important;
+    -webkit-text-fill-color: var(--text-color) !important;
     opacity: 1 !important;
     pointer-events: auto !important;
 }
 [data-testid="stTextInput"] input::placeholder,
 [data-testid="stTextArea"] textarea::placeholder {
-    color: #aac3d9 !important;
-    -webkit-text-fill-color: #aac3d9 !important;
+    color: var(--text-color) !important;
+    -webkit-text-fill-color: var(--text-color) !important;
+    opacity: .65 !important;
 }
 [data-testid="stTextArea"] textarea:focus,
 [data-testid="stTextInput"] input:focus {
     outline: 2px solid #54c9d3 !important;
 }
 
-/* 1. Sidebar Navigation 文字颜色 */
+/* Sidebar text follows the active theme. */
 [data-testid="stSidebar"] label,
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span {
-    color: #E8F1FF !important;
+    color: var(--text-color) !important;
 }
 
 /* 2. Sidebar 提示文字 */
 [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
-    color: #B8CCE0 !important;
+    color: var(--text-color) !important;
+    opacity:.8;
 }
 
 /* 3. Secondary Button 文字及背景 */
 div.stButton > button[kind="secondary"] {
-    background-color: #173B59 !important;
-    color: #FFFFFF !important;
-    border: 1px solid #3B718D !important;
+    background-color: var(--secondary-background-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color, #718096) !important;
 }
 
 /* 4. Secondary Button Hover */
 div.stButton > button[kind="secondary"]:hover {
-    background-color: #245779 !important;
-    color: #FFFFFF !important;
-    border-color: #54C9D3 !important;
+    background-color: var(--secondary-background-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--primary-color) !important;
+    filter:brightness(.96);
 }
 /* 5. Main form labels */
 div[data-testid="stWidgetLabel"] p,
@@ -114,7 +120,7 @@ div[data-testid="stTextArea"] label p,
 div[data-testid="stSelectbox"] label p,
 div[data-testid="stMultiSelect"] label p,
 div[data-testid="stNumberInput"] label p {
-    color: #DCEBFA !important;
+    color: var(--text-color) !important;
     opacity: 1 !important;
     font-weight: 600 !important;
 }
@@ -122,23 +128,52 @@ div[data-testid="stNumberInput"] label p {
 /* 6. Text input / text area readability */
 div[data-testid="stTextInput"] input,
 div[data-testid="stTextArea"] textarea {
-    background-color: #102D49 !important;
-    color: #EAF4FF !important;
-    border: 1px solid #9FC3DF !important;
+    background-color: var(--secondary-background-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color, #718096) !important;
 }
 
 /* 7. Placeholder color */
 div[data-testid="stTextInput"] input::placeholder,
 div[data-testid="stTextArea"] textarea::placeholder {
-    color: #9FC3DF !important;
-    opacity: 1 !important;
+    color: var(--text-color) !important;
+    opacity: .65 !important;
 }
 
 /* 8. Selectbox text */
 div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-    background-color: #102D49 !important;
-    color: #EAF4FF !important;
-    border-color: #9FC3DF !important;
+    background-color: var(--secondary-background-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color, #718096) !important;
+}
+/* Selectbox menus and selected values must remain readable before hover. */
+[data-testid="stSelectbox"] [data-baseweb="select"] *,
+[data-testid="stMultiSelect"] [data-baseweb="select"] * {
+    color:var(--text-color) !important;
+}
+[data-baseweb="popover"] [role="listbox"] {
+    background:var(--background-color) !important;
+    color:var(--text-color) !important;
+}
+/* Expanders were white in Light Mode while the old stylesheet forced white labels. */
+[data-testid="stExpander"] details,
+[data-testid="stExpander"] details > summary {
+    background:var(--secondary-background-color) !important;
+    color:var(--text-color) !important;
+}
+[data-testid="stExpander"] summary *,
+[data-testid="stExpander"] summary svg {
+    color:var(--text-color) !important;
+    fill:currentColor;
+}
+[data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+    background:var(--background-color);
+    color:var(--text-color);
+}
+/* JSON, dataframe, tabs and radio options inherit readable theme text. */
+[data-testid="stJson"], [data-testid="stDataFrame"],
+[data-testid="stRadio"] label, [data-testid="stTabs"] button {
+    color:var(--text-color) !important;
 }
 </style>
 
@@ -407,6 +442,38 @@ with st.sidebar:
     st.caption("Session data is temporary; refresh/restart may clear it.")
 
 page = st.session_state.navigation
+
+# Streamlit can retain the previous page's vertical scroll position across
+# reruns. Reset it only when the user actually navigates to another page.
+if st.session_state.get("_last_rendered_page") != page:
+    st.session_state._last_rendered_page = page
+    components.html("""
+    <script>
+    (function () {
+        function scrollToTop() {
+            try {
+                const doc = window.parent.document;
+                const targets = [
+                    doc.scrollingElement,
+                    doc.querySelector('[data-testid="stMain"]'),
+                    doc.querySelector('[data-testid="stAppViewContainer"]'),
+                    doc.querySelector('section.main')
+                ];
+                targets.forEach(el => {
+                    if (el) el.scrollTo({top: 0, left: 0, behavior: 'instant'});
+                });
+                window.parent.scrollTo(0, 0);
+            } catch (error) {
+                // Avoid interrupting navigation if iframe access is restricted.
+            }
+        }
+        scrollToTop();
+        requestAnimationFrame(scrollToTop);
+        setTimeout(scrollToTop, 100);
+        setTimeout(scrollToTop, 350);
+    })();
+    </script>
+    """, height=0)
 
 # ---------- 01 / Welcome ----------
 if page == "Welcome":
@@ -753,3 +820,6 @@ elif page == "Reports":
         with st.expander("Raw assessment JSON"):
             st.json(record)
         st.info("Limitations: The copilot assists human assurance work; it does not replace a qualified auditor.")
+
+
+
