@@ -432,7 +432,7 @@ init_state()
 
 with st.sidebar:
     st.title("🛡️ AI Assurance")
-    st.caption("COPILOT · FYP UI PROTOTYPE V2")
+    st.caption("COPILOT · AI Assurance · Governance · Risk Assessment")
     st.divider()
     st.radio("Navigation", PAGES, index=choose(PAGES, st.session_state.navigation),
              key=f"nav_{st.session_state.nav_version}", on_change=nav_changed)
